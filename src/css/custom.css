@@ -1,0 +1,54 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+/* colore su light (background #ffffff): */
+:root {
+  --ifm-color-primary: #214aba;
+  --ifm-color-primary-dark: #1e43a7;
+  --ifm-color-primary-darker: #1c3f9e;
+  --ifm-color-primary-darkest: #173482;
+  --ifm-color-primary-light: #2451cd;
+  --ifm-color-primary-lighter: #2655d6;
+  --ifm-color-primary-lightest: #406add;
+}
+
+[data-theme='dark'] {
+  --ifm-color-primary: #bdcbef;
+  --ifm-color-primary-dark: #9bb0e7;
+  --ifm-color-primary-darker: #89a2e2;
+  --ifm-color-primary-darkest: #567ad6;
+  --ifm-color-primary-light: #dfe6f7;
+  --ifm-color-primary-lighter: #f1f4fc;
+  --ifm-color-primary-lightest: #ffffff;
+}
+/* Banner container */.banner-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Left side (logo and title) */.left-side {
+  display: flex;
+  align-items: center;
+}.logo {
+  height: 80px; /* Adjust height as needed */
+  margin-right: 2rem;
+}.hero__title {
+  font-size: 2.5rem; /* Adjust font size as needed */
+  margin-bottom: 0.5rem;
+}.hero__subtitle {
+  font-size: 1.25rem; /* Adjust font size as needed */
+}
+
+/* Right side (buttons) */.right-side {
+  display: flex;
+}.button {
+  /* Customize button styles as needed */
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
