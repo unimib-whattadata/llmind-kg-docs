@@ -2,119 +2,63 @@
 sidebar_position: 1
 ---
 
-# Model Installation
+# LLMind: Psychiatric Diagnosis Assistant
+
+## Overview
+
+This repository provides a system to assist with psychiatric diagnosis, leveraging large language models and knowledge graphs. The system uses a Docker Compose setup for easy deployment, automating the database population.
+
+## Key Features
+
+* **Automated Database Population:** The database is automatically populated during the Docker Compose setup, eliminating manual data entry.
+* **LLM Integration:** The system integrates with large language models (LLMs) to provide diagnostic suggestions based on case descriptions.
+* **Knowledge Graph:** A knowledge graph of medical concepts (specifically ICD-11) is utilized to enhance the accuracy and relevance of the LLM's output.
+* **API:** A Flask API is included to provide a convenient interface for querying the LLM and retrieving relevant information.
+
+## Docker Compose Setup
+
+The core functionality of this project is designed to be run using Docker Compose. This simplifies the setup process and ensures that all necessary components (database, application, etc.) work together seamlessly.
 
 ### Prerequisites
 
-Ensure you have Python 3.8+ installed along with the necessary dependencies. Install them using:
+* Docker
+* Docker Compose
 
-```bash
-pip install -r requirements.txt
-```
+### Installation and Usage
 
-### Running the Project
+1.  **Clone the repository:**
+    ```bash
+    git clone <repository_url>
+    cd <repository_directory>
+    ```
+2.  **Ensure that docker compose is up:**
+    ```bash
+    docker compose up
+    ```
+    * This command will build and start the services defined in the `docker-compose.yml` file. This includes setting up the database and populating it with the necessary data.
+3.  **Access the API:**
+    * Once the services are running, you can access the API at `http://localhost:<port>`, where `<port>` is the port specified in your `docker-compose.yml` (e.g., 5000).
 
-1. **Download ICD-11 Data**
+## Code Description (Key Files)
 
-   ```bash
-   python icddownloader.py
-   ```
+* `src/3. DBdsmsplit.py`:  Splits and processes input text files containing clinical case data, preparing it for database insertion.
+* `src/4. DBlangchainbuilder.py`:  Builds and persists Chroma vector stores using Ollama embeddings for efficient retrieval of information by the LLM.
+* `src/6. KGFileHandler.py`:  Handles processing and insertion of data from a knowledge graph CSV file into the database.
+* `src/7. ICDGraph.py`:  Retrieves ICD-11 code data, processes it, and inserts it into the database.  Also includes functionality to generate a knowledge graph representation (TTL).
+* `src/api.py`:  Defines the Flask API endpoints for interacting with the LLM and retrieving information.
+* `src/app.py`:  The main application script that orchestrates the data processing and LLM interaction.
+* `src/db_config.py`:  Contains database connection configuration and logic to create the database if it doesn't exist.
+* `src/LangchainRDFBuilder.py`:  Builds Chroma vector stores from RDF (TTL) data.
 
-   This script fetches ICD-11 classifications from an API and stores the data in JSON and CSV format.
+## Important Notes
 
-2. **Process ICD-11 Data**
+* **Database Credentials:** Ensure that the database connection details in `src/db_config.py` are correctly configured for your environment.  It is highly recommended to use environment variables to store sensitive information like passwords.
+* **Model Selection:** The LLM model used can be configured within the code (e.g., in `src/app.py` and `src/api.py`).  Ensure that the specified model is available in your Ollama setup.
+* **Data Sources:** The system relies on external data sources (e.g., text files, CSV files, APIs) for clinical case data and knowledge graph information.  Make sure these sources are accessible and properly formatted.
 
-   ```bash
-   python ICD_processing.py
-   ```
+## Disclaimer
 
-   This script processes and cleans ICD-11 data, preparing it for use in the pipeline.
-
-3. **Split DSM-5 Cases**
-
-   ```bash
-   python dsmsplit.py
-   ```
-
-   Extracts and structures DSM-5 case data from a text file into a structured CSV.
-
-4. **Generate Vector Embeddings**
-
-   ```bash
-   python langchainbuilder.py
-   ```
-
-   Builds Chroma vector stores for efficient retrieval.
-
-5. **Process Medical Cases with AI**
-
-   ```bash
-   python app.py
-   ```
-
-   Runs the main pipeline to generate diagnoses for clinical cases.
-
-6. **Expose LLM-based API**
-
-   ```bash
-   python api.py
-   ```
-
-   Provides a Flask API endpoint (`/askLLM`) that allows querying an LLM.
-
-## File Descriptions
-
-### `api.py`
-
-- Implements a Flask-based REST API for querying an LLM using LangChain.
-- Retrieves data using Chroma and LangChain's RAG capabilities.
-- Accepts a JSON request with an `input_string` and returns the LLM response.
-
-### `app.py`
-
-- Reads DSM-5 cases from CSV.
-- Uses Chroma and LLMs to generate diagnostic outputs.
-- Saves results in a structured format.
-
-### `dsmsplit.py`
-
-- Extracts individual DSM-5 cases from a text file.
-- Parses cases into structured sections: `Introduction`, `Discussion`, `Diagnosis`.
-- Saves the structured data into a CSV file.
-
-### `ICD_processing.py`
-
-- Reads ICD-11 classifications from a CSV.
-- Extracts ICD-11 disorder descriptions from a PDF.
-- Cleans and structures data for use in LangChain-based queries.
-
-### `icddownloader.py`
-
-- Fetches ICD-11 classification data from an API.
-- Saves data in JSON and CSV formats for further processing.
-
-### `langchainbuilder.py`
-
-- Creates vector embeddings using LangChain’s Chroma module.
-- Loads ICD-11 prompts for efficient retrieval-augmented generation (RAG).
-
-## API Usage
-
-To query the API, send a POST request to `http://127.0.0.1:5000/askLLM` with JSON data:
-
-```json
-{
-  "input_string": "Describe the symptoms of schizophrenia."
-}
-```
-
-The response will contain the AI-generated diagnosis:
-
-```json
-{
-  "output_string": "Schizophrenia is characterized by..."
-}
-```
+This system is intended to be used as a supportive tool for trained medical professionals. It should not be used as a substitute for professional medical judgment. The diagnostic suggestions provided by the system are for informational purposes only.
 
 ## Acknowledgments
 
